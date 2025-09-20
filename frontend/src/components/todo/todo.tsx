@@ -1,13 +1,33 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type SetStateAction } from "react";
 import type { Todo, TodoByStatus, TodoStatus } from "../../interface/todo";
 import { getMockTodo } from "../../data";
 import CreateTodo from "./createTodo";
 import TodoList from "./todoList";
+import { getTodos } from "../../service/api";
 
 const DisplayStatus: { label: string; value: TodoStatus }[] = [
   { label: "To Do", value: "todo" },
   { label: "Completed", value: "complete" },
 ];
+
+async function getTodoList(
+  setTodo: React.Dispatch<SetStateAction<Todo[]>>,
+  setCompletedTodos: React.Dispatch<SetStateAction<Todo[]>>
+): Promise<TodoByStatus> {
+  try {
+    let todoByStatus: TodoByStatus = {};
+    const todosResponse = await getTodos();
+    const todoList = todosResponse.result;
+    todoByStatus = filterTodoByStatus(todoList);
+    console.log("todoByStatus", todoByStatus);
+    setTodo(todoByStatus["todo"].todos);
+    setCompletedTodos(todoByStatus["complete"].todos);
+    return todoByStatus;
+  } catch (error) {
+    console.error("Error fetching todos:", error);
+    return {};
+  }
+}
 
 function filterTodoByStatus(todos: Todo[]): TodoByStatus {
   const todoByStatus: TodoByStatus = {};
@@ -23,15 +43,8 @@ function filterTodoByStatus(todos: Todo[]): TodoByStatus {
 }
 
 export default function TodoComponent() {
-  let todoByStatus: TodoByStatus = {};
   const [todos, setTodo] = useState<Todo[]>([]);
   const [completedTodos, setCompletedTodos] = useState<Todo[]>([]);
-  const getTodos = async () => {
-    const data = await getMockTodo();
-    todoByStatus = filterTodoByStatus(data);
-    setTodo(todoByStatus["todo"].todos);
-    setCompletedTodos(todoByStatus["complete"].todos);
-  };
 
   // Add new todo in list
   function addNewTodo(todo: Todo) {
@@ -39,7 +52,7 @@ export default function TodoComponent() {
   }
 
   useEffect(() => {
-    getTodos();
+    getTodoList(setTodo, setCompletedTodos);
   }, []);
 
   return (
