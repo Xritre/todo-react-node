@@ -5,6 +5,10 @@ export interface Todo {
     dueDate: string;
 }
 
+export interface GetTodoList {
+    result: Todo[];
+}
+
 export type TodoByStatus = Record<string, { todos: Todo[]; status: string }>;
 
 
