@@ -1,11 +1,8 @@
 import { useState } from "react";
 import type { Todo } from "../../interface/todo";
+import { postTodo } from "../../service/api";
 
-export default function CreateTodo({
-  onAddTodo,
-}: {
-  onAddTodo: (todo: Todo) => void;
-}) {
+export default function CreateTodo() {
   const [createTodo, setCreateTodo] = useState({
     task: "",
     dueDate: "",
@@ -19,17 +16,15 @@ export default function CreateTodo({
     }));
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     console.log("Form submitted", createTodo);
-    const newTodo: Todo = {
-      id: 0,
-      task: createTodo.task,
-      status: "todo",
-      dueDate: createTodo.dueDate,
-    };
-    onAddTodo(newTodo);
-    setCreateTodo({ task: "", dueDate: "" });
+    const newTodo = new FormData();
+    newTodo.append("task", createTodo.task);
+    newTodo.append("dueDate", createTodo.dueDate);
+    newTodo.append("status", "todo");
+    await postTodo(newTodo);
+    // setCreateTodo({ task: "", dueDate: "" });
   }
 
   return (
