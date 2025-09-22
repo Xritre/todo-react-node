@@ -1,6 +1,6 @@
 import "./App.css";
-import Layout from "./assets/components/layout";
-import TodoComponent from "./assets/components/todo/todo";
+import Layout from "./components/layout";
+import TodoComponent from "./components/todo/todo";
 
 function App() {
   return (
