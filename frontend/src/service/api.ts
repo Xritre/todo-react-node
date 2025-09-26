@@ -1,5 +1,5 @@
 import axios, { type AxiosResponse } from "axios";
-import type { CreateTodo, GetTodoList } from "../interface/todo";
+import type { CreateTodo, GetTodoById, GetTodoList } from "../interface/todo";
 
 const baseURL = "http://localhost:3000";
 
@@ -14,6 +14,10 @@ async function handleRequest<T>(request: Promise<AxiosResponse>): Promise<T> {
 
 export async function getTodos(): Promise<GetTodoList> {
   return handleRequest<GetTodoList>(axios.get(`${baseURL}/todos`));
+}
+
+export async function getTodoById(id: string): Promise<GetTodoById> {
+  return handleRequest<GetTodoById>(axios.get(`${baseURL}/todos/${id}`));
 }
 
 export async function postTodo(todo: FormData): Promise<GetTodoList> {

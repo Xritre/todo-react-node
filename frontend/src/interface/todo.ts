@@ -8,15 +8,16 @@ export interface Todo {
 export interface CreateTodo {
   task: string;
   status: TodoStatus;
-  dueDate: string;
+  dueDate: string | Date;
 }
 
-export interface ApiResponse<T> {
-  result: T;
-  message: string;
+export interface ApiResponse<Result, Message = string | null> {
+  result: Result;
+  message: Message;
 }
 
 export type GetTodoList = ApiResponse<Todo[]>;
+export type GetTodoById = ApiResponse<Todo>;
 
 export type PostTodo = ApiResponse<null>;
 
